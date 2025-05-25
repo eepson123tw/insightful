@@ -42,7 +42,7 @@ import { XAIService, type SuccessContent, type ErrorContent } from '@/server/api
 
 // 主要設定頁面組件
 const SettingsPage = () => {
-	const [settings, setSettings] = useState(SettingsJson);
+	const [settings, setSettings] = useState(JSON.parse(localStorage.getItem('interestRadarSettings')!) as typeof SettingsJson || SettingsJson);
 
 	const [isSaving, setIsSaving] = useState(false);
 	const [isTesting, setIsTesting] = useState(false);
