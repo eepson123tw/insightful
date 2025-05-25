@@ -1,0 +1,141 @@
+# MIT License
+
+## Insightful - AI-Powered Personalized News & Information Insights
+
+Copyright (c) 2025 Aaron Shih
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+## About Insightful
+
+Insightful is an AI-powered personalized information platform that transforms raw news and data into meaningful, actionable insights tailored to individual interests and preferences. Using advanced AI technology through xAI's Grok API, Insightful delivers:
+
+- 🧙‍♂️ **Intelligent Curation**: AI-driven analysis and synthesis of information
+- 🎯 **Personalized Insights**: Content tailored to your specific interests and queries
+- 📊 **Smart Analytics**: Comprehensive metrics and performance tracking
+- 🌐 **Multi-Source Integration**: Aggregation from web, news, social media, and RSS feeds
+- ⚡ **Automated Delivery**: Seamless, hands-off personalized content experience
+- 🔧 **Flexible Configuration**: Customizable search parameters and preferences
+
+## Usage Rights Under This License
+
+✅ **You CAN:**
+- Use Insightful for personal, educational, or commercial projects
+- Modify and customize the code to suit your specific needs
+- Distribute original or modified versions of the software
+- Incorporate Insightful into larger applications or services
+- Sell products or services that include this software
+
+✅ **You MUST:**
+- Include this copyright notice and license text in all distributions
+- Provide attribution to the original Insightful project
+- Maintain license compatibility when combining with other software
+
+❌ **You CANNOT:**
+- Hold the original authors liable for any damages or issues
+- Use the project name or author names to endorse derived works without permission
+- Remove or modify the copyright notices
+
+## Third-Party Dependencies & Services
+
+Insightful integrates with several third-party libraries and services. Please ensure compliance with their respective licenses and terms:
+
+### **Frontend Libraries**
+- **React**: MIT License
+- **Lucide React Icons**: ISC License  
+- **Tailwind CSS**: MIT License
+
+### **AI & API Services**
+- **xAI Grok API**: Subject to xAI's Terms of Service and Usage Policies
+- **External Content Sources**: Subject to respective website terms and copyright laws
+
+### **Browser APIs**
+- **localStorage**: Standard Web API
+- **Fetch API**: Standard Web API
+
+## Responsible Use Guidelines
+
+When using Insightful, please ensure:
+
+### **API Compliance**
+- Respect xAI API rate limits and usage terms
+- Monitor and manage your API key security
+- Comply with xAI's acceptable use policies
+
+### **Content & Copyright**
+- Respect copyright and fair use principles when accessing external content
+- Ensure appropriate attribution for sourced information
+- Follow applicable copyright laws in your jurisdiction
+
+### **Privacy & Data**
+- Handle user preferences and data responsibly
+- Implement appropriate security measures for sensitive information
+- Comply with relevant privacy regulations (GDPR, CCPA, etc.)
+
+## Contributing to Insightful
+
+We welcome contributions from the community! By contributing to this project, you agree that:
+
+- Your contributions will be licensed under the same MIT License
+- You have the right to submit the contributed code
+- Your contributions maintain the project's quality and coding standards
+
+### **Ways to Contribute**
+- 🐛 Bug reports and fixes
+- ✨ New features and enhancements  
+- 📚 Documentation improvements
+- 🎨 UI/UX enhancements
+- 🔧 Performance optimizations
+- 🧪 Testing and quality assurance
+
+## Support & Community
+
+- **Issues**: Report bugs and request features via GitHub Issues
+- **Documentation**: Comprehensive guides available in the project repository
+- **Community**: Join discussions and share insights with other users
+
+## Disclaimer
+
+Insightful is provided as an educational and utility tool. The software:
+
+- Does not guarantee accuracy of external content or AI-generated insights
+- Is not responsible for the content provided by third-party sources
+- Should not be used as the sole source for critical decision-making
+- May be subject to service interruptions or API limitations
+
+Users are responsible for verifying information accuracy and using the insights appropriately within their specific context and requirements.
+
+---
+
+## Project Philosophy
+
+*"True insight comes not from the abundance of information, but from the wisdom to understand what matters most."*
+
+Insightful embodies this principle by transforming information overload into personalized understanding, helping users focus on what truly matters to them in our rapidly evolving world.
+
+## Version History
+
+- **v1.0.0**: Initial release with core AI insight generation capabilities
+- **Future**: Planned enhancements for advanced analytics and expanded source integration
+
+---
+
+**Insightful** - *Where Information Becomes Understanding* 🧙‍♂️✨
