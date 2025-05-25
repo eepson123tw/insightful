@@ -1,0 +1,31 @@
+{
+	"apiKey": "",
+	"apiKeyStatus": "unchecked",
+	"apiKeyError": "",
+	"customSearchQuery": "Provide a brief summary of the latest technology news.",
+	"searchQueryTemplates": [
+		"Provide a brief summary of the latest technology news.",
+		"What are the latest developments in AI and machine learning?",
+		"Show me recent news about cryptocurrency and blockchain.",
+		"What are the latest trends in web development?",
+		"Give me updates on climate change and environmental technology."
+	],
+	"searchFrequency": "daily",
+	"maxResults": 10,
+	"searchSources": [
+		"web",
+		"news"
+	],
+	"countryCode": "TW",
+	"language": "zh-TW",
+	"dateRange": 7,
+	"searchTime": "09:00",
+	"emailNotifications": true,
+	"pushNotifications": false,
+	"summaryNotifications": true,
+	"safeSearch": true,
+	"excludedWebsites": "",
+	"xHandles": "",
+	"rssLinks": "",
+	"maxSearchResults": 20
+}

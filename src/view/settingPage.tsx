@@ -13,25 +13,17 @@ import {
 	Loader2,
 	Save,
 	RefreshCw,
-	AlertTriangle,
-	Info,
 	Plus,
 	Trash2,
-	Eye,
-	EyeOff,
-	ExternalLink,
-	BarChart3,
-	Timer,
-	FileText,
-	Link
 } from 'lucide-react';
 import { Textarea } from "@/components/ui/textarea"
 import {
 	Select
 } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Alert} from "@/components/ui/alert"
+
+import { Alert, AlertTitle } from "@/components/ui/alert"
+
 import {
 	Card,
 	CardContent,
@@ -41,384 +33,24 @@ import {
 } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
+import AlertBlock from '@/components/setting/AlertBlock';
+import SettingsJson from '@/utils/setting.json'
+import EnhancedResults from '@/components/setting/EnhancedResults'
+import { XAIService, type SuccessContent, type ErrorContent } from '@/server/api';
 
 
-// 增強的結果顯示組件
-const EnhancedResultsDisplay = ({ testResults }) => {
-	const [showFullContent, setShowFullContent] = useState(false);
-	const [showCitations, setShowCitations] = useState(false);
-
-	if (!testResults) return null;
-
-	return (
-		<div className={`mt-4 border rounded-lg overflow-hidden ${testResults.success
-			? 'bg-green-50 border-green-200'
-			: 'bg-red-50 border-red-200'
-			}`}>
-
-			{/* 狀態標題 */}
-			<div className={`px-4 py-3 border-b ${testResults.success ? 'border-green-200 bg-green-100' : 'border-red-200 bg-red-100'}`}>
-				<div className="flex items-center justify-between">
-					<div className="flex items-center gap-2">
-						{testResults.success ? (
-							<Check className="w-5 h-5 text-green-600" />
-						) : (
-							<X className="w-5 h-5 text-red-600" />
-						)}
-						<span className={`font-medium ${testResults.success ? 'text-green-800' : 'text-red-800'}`}>
-							{testResults.success ? '搜尋測試成功' : '搜尋測試失敗'}
-						</span>
-					</div>
-					{testResults.success && (
-						<Badge variant="success">
-							{testResults.responseTime}ms
-						</Badge>
-					)}
-				</div>
-			</div>
-
-			<div className="p-4 space-y-4">
-				{testResults.success ? (
-					<>
-						{/* 統計資訊 */}
-						<div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-							<div className="bg-white rounded-lg p-3 border border-green-200">
-								<div className="flex items-center gap-2 mb-1">
-									<Timer className="w-4 h-4 text-green-600" />
-									<span className="text-xs font-medium text-green-700">響應時間</span>
-								</div>
-								<div className="text-lg font-bold text-green-800">{testResults.responseTime}ms</div>
-							</div>
-
-							<div className="bg-white rounded-lg p-3 border border-green-200">
-								<div className="flex items-center gap-2 mb-1">
-									<BarChart3 className="w-4 h-4 text-green-600" />
-									<span className="text-xs font-medium text-green-700">Token 使用</span>
-								</div>
-								<div className="text-lg font-bold text-green-800">
-									{testResults.usage?.total_tokens || 0}
-								</div>
-							</div>
-
-							<div className="bg-white rounded-lg p-3 border border-green-200">
-								<div className="flex items-center gap-2 mb-1">
-									<Search className="w-4 h-4 text-green-600" />
-									<span className="text-xs font-medium text-green-700">搜尋次數</span>
-								</div>
-								<div className="text-lg font-bold text-green-800">
-									{testResults.usage?.number_searches || 0}
-								</div>
-							</div>
-
-							<div className="bg-white rounded-lg p-3 border border-green-200">
-								<div className="flex items-center gap-2 mb-1">
-									<Link className="w-4 h-4 text-green-600" />
-									<span className="text-xs font-medium text-green-700">引用來源</span>
-								</div>
-								<div className="text-lg font-bold text-green-800">
-									{testResults.citations?.length || 0}
-								</div>
-							</div>
-						</div>
-
-						{/* 來源類型 */}
-						{testResults.sources && (
-							<div className="bg-white rounded-lg p-3 border border-green-200">
-								<div className="flex items-center gap-2 mb-2">
-									<Globe className="w-4 h-4 text-green-600" />
-									<span className="text-sm font-medium text-green-700">搜尋來源</span>
-								</div>
-								<div className="flex flex-wrap gap-1">
-									{testResults.sources.map((source, index) => (
-										<Badge key={index} variant="info">{source}</Badge>
-									))}
-								</div>
-							</div>
-						)}
-
-						{/* 連接方式 */}
-						<div className="bg-white rounded-lg p-3 border border-green-200">
-							<div className="flex items-center gap-2 mb-1">
-								<Shield className="w-4 h-4 text-green-600" />
-								<span className="text-sm font-medium text-green-700">連接方式</span>
-							</div>
-							<Badge variant={testResults.proxyUsed ? "info" : "warning"}>
-								{testResults.proxyUsed ? '代理服務器' : '直接連接'}
-							</Badge>
-						</div>
-
-						{/* 搜尋結果內容 */}
-						<div className="bg-white rounded-lg border border-green-200">
-							<div className="px-4 py-3 border-b border-green-200 bg-green-50">
-								<button
-									onClick={() => setShowFullContent(!showFullContent)}
-									className="flex items-center gap-2 text-sm font-medium text-green-800 hover:text-green-900 transition-colors"
-								>
-									<FileText className="w-4 h-4" />
-									搜尋結果內容
-									{showFullContent ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-								</button>
-							</div>
-							{showFullContent && (
-								<div className="p-4">
-									<div className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap max-h-64 overflow-y-auto bg-gray-50 p-3 rounded border">
-										{testResults.content}
-									</div>
-								</div>
-							)}
-						</div>
-
-						{/* 引用來源 */}
-						{testResults.citations?.length > 0 && (
-							<div className="bg-white rounded-lg border border-green-200">
-								<div className="px-4 py-3 border-b border-green-200 bg-green-50">
-									<button
-										onClick={() => setShowCitations(!showCitations)}
-										className="flex items-center gap-2 text-sm font-medium text-green-800 hover:text-green-900 transition-colors"
-									>
-										<Link className="w-4 h-4" />
-										引用來源 ({testResults.citations.length})
-										{showCitations ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-									</button>
-								</div>
-								{showCitations && (
-									<div className="p-4">
-										<div className="space-y-2 max-h-48 overflow-y-auto">
-											{testResults.citations.map((citation, index) => (
-												<div key={index} className="flex items-start gap-2 p-2 bg-gray-50 rounded border">
-													<span className="text-xs font-mono text-gray-500 mt-1">
-														{String(index + 1).padStart(2, '0')}
-													</span>
-													<a
-														href={citation}
-														target="_blank"
-														rel="noopener noreferrer"
-														className="flex-1 text-sm text-blue-600 hover:text-blue-800 hover:underline break-all"
-													>
-														{citation}
-													</a>
-													<ExternalLink className="w-3 h-3 text-gray-400 mt-1 flex-shrink-0" />
-												</div>
-											))}
-										</div>
-									</div>
-								)}
-							</div>
-						)}
-					</>
-				) : (
-					<>
-						{/* 錯誤訊息 */}
-						<div className="bg-white rounded-lg p-4 border border-red-200">
-							<div className="flex items-start gap-2">
-								<AlertTriangle className="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0" />
-								<div className="flex-1">
-									<div className="font-medium text-red-800 mb-1">錯誤詳情</div>
-									<div className="text-sm text-red-700 font-mono bg-red-50 p-2 rounded border">
-										{testResults.error}
-									</div>
-								</div>
-							</div>
-						</div>
-
-						{/* 故障排除建議 */}
-						{!testResults.proxyUsed && testResults.error?.includes('CORS') && (
-							<div className="bg-yellow-50 rounded-lg p-4 border border-yellow-200">
-								<div className="flex items-start gap-2">
-									<Info className="w-5 h-5 text-yellow-600 mt-0.5" />
-									<div>
-										<div className="font-medium text-yellow-800 mb-2">建議解決方案</div>
-										<div className="text-sm text-yellow-700 mb-2">
-											檢測到 CORS 問題，建議啟動代理服務器：
-										</div>
-										<code className="text-xs bg-yellow-100 p-2 rounded border block">
-											node xai-proxy-server.js
-										</code>
-									</div>
-								</div>
-							</div>
-						)}
-					</>
-				)}
-			</div>
-		</div>
-	);
-};
-
-// xAI API 服務類
-class XAIService {
-	constructor(apiKey) {
-		this.apiKey = apiKey;
-		this.useProxy = this.detectProxyAvailability();
-		this.baseUrl = 'https://api.x.ai/v1';
-	}
-
-	detectProxyAvailability() {
-		return window.location.hostname === 'localhost' ||
-			window.location.hostname === '127.0.0.1' ||
-			process.env.REACT_APP_USE_PROXY === 'true';
-	}
-
-	async testSearch(settings) {
-		try {
-			const searchSources = this._buildSearchSources(settings);
-
-			// 使用用戶設定的搜尋查詢
-			const searchQuery = settings.customSearchQuery || 'Provide a brief summary of the latest technology news.';
-
-			const payload = {
-				messages: [
-					{
-						role: 'user',
-						content: searchQuery
-					}
-				],
-				search_parameters: {
-					mode: 'auto',
-					sources: searchSources,
-					max_search_results: Math.min(settings.maxResults || 10, 20),
-					return_citations: true,
-					...(settings.dateRange && {
-						from_date: new Date(Date.now() - settings.dateRange * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
-					})
-				},
-				model: 'grok-3-latest',
-				max_tokens: 500
-			};
-
-			console.log('Search payload:', JSON.stringify(payload, null, 2));
-
-			const startTime = Date.now();
-			let response;
-
-			response = await fetch(`${this.baseUrl}/chat/completions`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					'Authorization': `Bearer ${this.apiKey}`
-				},
-				body: JSON.stringify(payload)
-			});
-
-			const responseTime = Date.now() - startTime;
-
-			if (!response.ok) {
-				const errorText = await response.text();
-				throw new Error(`HTTP ${response.status}: ${errorText}`);
-			}
-
-			const data = await response.json();
-
-			return {
-				success: true,
-				content: data.choices?.[0]?.message?.content || 'No content received',
-				citations: data.citations || [],
-				responseTime,
-				usage: data.usage,
-				sources: searchSources.map(s => s.type),
-				proxyUsed: this.useProxy
-			};
-		} catch (error) {
-			return {
-				success: false,
-				error: error.message,
-				responseTime: 0,
-				proxyUsed: this.useProxy
-			};
-		}
-	}
-
-	_buildSearchSources(settings) {
-		const sources = [];
-
-		settings.searchSources?.forEach(sourceType => {
-			const source = { type: sourceType };
-
-			if (sourceType === 'web' || sourceType === 'news') {
-				if (settings.countryCode) {
-					source.country = settings.countryCode;
-				}
-				if (settings.excludedWebsites) {
-					source.excluded_websites = settings.excludedWebsites
-						.split(',')
-						.map(site => site.trim())
-						.filter(site => site.length > 0)
-						.slice(0, 5);
-				}
-				if (settings.safeSearch !== undefined) {
-					source.safe_search = settings.safeSearch;
-				}
-			}
-
-			if (sourceType === 'x' && settings.xHandles) {
-				source.x_handles = settings.xHandles
-					.split(',')
-					.map(handle => handle.trim().replace('@', ''))
-					.filter(handle => handle.length > 0);
-			}
-
-			if (sourceType === 'rss' && settings.rssLinks) {
-				source.links = [settings.rssLinks.split(',')[0]?.trim()].filter(Boolean);
-			}
-
-			sources.push(source);
-		});
-
-		return sources.length > 0 ? sources : [{ type: 'web' }, { type: 'news' }];
-	}
-}
 
 // 主要設定頁面組件
 const SettingsPage = () => {
-	const [settings, setSettings] = useState({
-		// API 設定
-		apiKey: '',
-		apiKeyStatus: 'unchecked',
-		apiKeyError: '',
-
-		// 自訂搜尋查詢
-		customSearchQuery: 'Provide a brief summary of the latest technology news.',
-		searchQueryTemplates: [
-			'Provide a brief summary of the latest technology news.',
-			'What are the latest developments in AI and machine learning?',
-			'Show me recent news about cryptocurrency and blockchain.',
-			'What are the latest trends in web development?',
-			'Give me updates on climate change and environmental technology.'
-		],
-
-		// 搜尋偏好
-		searchFrequency: 'daily',
-		maxResults: 20,
-		searchSources: ['web', 'news'],
-
-		// 地區設定
-		countryCode: 'TW',
-		language: 'zh-TW',
-
-		// 時間設定
-		dateRange: 7,
-		searchTime: '09:00',
-
-		// 通知設定
-		emailNotifications: true,
-		pushNotifications: false,
-		summaryNotifications: true,
-
-		// 高級設定
-		safeSearch: true,
-		excludedWebsites: '',
-		xHandles: '',
-		rssLinks: '',
-		maxSearchResults: 20
-	});
+	const [settings, setSettings] = useState(SettingsJson);
 
 	const [isSaving, setIsSaving] = useState(false);
 	const [isTesting, setIsTesting] = useState(false);
-	const [saveStatus, setSaveStatus] = useState('');
-	const [testResults, setTestResults] = useState(null);
+	const [saveStatus, setSaveStatus] = useState<'destructive' |'default'|''>('');
+	const [testResults, setTestResults] = useState<null | SuccessContent | ErrorContent>(null);
 
 	// 更新設定
-	const updateSetting = (key, value) => {
+	const updateSetting = (key: keyof typeof settings, value: typeof settings[keyof typeof settings] ) => {
 		setSettings(prev => ({
 			...prev,
 			[key]: value
@@ -434,7 +66,7 @@ const SettingsPage = () => {
 	};
 
 	// 刪除搜尋模板
-	const removeSearchTemplate = (index) => {
+	const removeSearchTemplate = (index:number) => {
 		const newTemplates = settings.searchQueryTemplates.filter((_, i) => i !== index);
 		updateSetting('searchQueryTemplates', newTemplates);
 	};
@@ -455,55 +87,29 @@ const SettingsPage = () => {
 	const saveSettings = async () => {
 		setIsSaving(true);
 		setSaveStatus('');
+		const element = document.querySelector(".box")!;
 
 		try {
 			localStorage.setItem('interestRadarSettings', JSON.stringify(settings));
-			setSaveStatus('success');
+			setSaveStatus('default');
 			setTimeout(() => setSaveStatus(''), 3000);
 		} catch (error) {
-			setSaveStatus('error');
+			setSaveStatus('destructive');
 			console.error('保存設定失敗:', error);
 		} finally {
+			element.scrollIntoView();
 			setIsSaving(false);
-		}
+		} 
 	};
 
 	// 重置設定
 	const resetSettings = () => {
-		const defaultSettings = {
-			apiKey: '',
-			apiKeyStatus: 'unchecked',
-			apiKeyError: '',
-			customSearchQuery: 'Provide a brief summary of the latest technology news.',
-			searchQueryTemplates: [
-				'Provide a brief summary of the latest technology news.',
-				'What are the latest developments in AI and machine learning?',
-				'Show me recent news about cryptocurrency and blockchain.',
-				'What are the latest trends in web development?',
-				'Give me updates on climate change and environmental technology.'
-			],
-			searchFrequency: 'daily',
-			maxResults: 20,
-			searchSources: ['web', 'news'],
-			countryCode: 'TW',
-			language: 'zh-TW',
-			dateRange: 7,
-			searchTime: '09:00',
-			emailNotifications: true,
-			pushNotifications: false,
-			summaryNotifications: true,
-			safeSearch: true,
-			excludedWebsites: '',
-			xHandles: '',
-			rssLinks: '',
-			maxSearchResults: 20
-		};
-		setSettings(defaultSettings);
+		setSettings(SettingsJson);
 		setTestResults(null);
 	};
 
 	// 處理搜尋來源變更
-	const handleSourceChange = (source, checked) => {
+	const handleSourceChange = (source:string, checked:boolean) => {
 		const newSources = checked
 			? [...settings.searchSources, source]
 			: settings.searchSources.filter(s => s !== source);
@@ -511,54 +117,33 @@ const SettingsPage = () => {
 	};
 
 	return (
-		<div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
+		<div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 box">
 			<div className="max-w-4xl mx-auto p-6">
-				{/* 頁面標題 */}
+
 				<div className="mb-8">
 					<div className="flex items-center gap-3 mb-2">
 						<div className="p-2 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg text-white">
 							<Settings className="w-6 h-6" />
 						</div>
-						<h1 className="text-3xl font-bold text-gray-900">Setting</h1>
+						<h2 className="text-3xl font-bold text-gray-900">Setting</h2>
 					</div>
 					<p className="text-gray-600">配置您的個人興趣雷達，讓AI為您量身打造資訊收集服務</p>
 				</div>
+				<AlertBlock />
 
-				{/* 連接狀態提示 */}
-				<Alert variant="default" className="mb-6">
-					<div className="flex items-start gap-2">
-						<Info className="w-4 h-4 mt-0.5" />
-						<div>
-							<div className="font-medium">連接狀態</div>
-							<div className="text-sm mt-1">
-								當前使用：<strong>
-									{(window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-										? '代理服務器模式'
-										: '直接連接模式'
-									}
-								</strong>
-							</div>
-						</div>
-					</div>
-				</Alert>
 
 				{/* 保存狀態提示 */}
 				{saveStatus && (
 					<div className="mb-6">
 						<Alert variant={saveStatus}>
-							<div className="flex items-center gap-2">
-								{saveStatus === 'success' ? (
-									<>
-										<Check className="w-4 h-4 text-green-600" />
-										<span className="text-green-800">設定已成功保存！</span>
-									</>
+							{saveStatus === 'default' ? <Check className="w-4 h-4 stroke-green-600" /> : <X className="w-4 h-4 stroke-red-600" />}
+							<AlertTitle className="flex items-center gap-2">
+								{saveStatus === 'default' ? (
+									<span className="text-green-800">設定已成功保存！</span>
 								) : (
-									<>
-										<X className="w-4 h-4 text-red-600" />
-										<span className="text-red-800">保存失敗，請重試</span>
-									</>
+									<span className="text-red-800">保存失敗，請重試</span>
 								)}
-							</div>
+							</AlertTitle>
 						</Alert>
 					</div>
 				)}
@@ -815,7 +400,7 @@ const SettingsPage = () => {
 
 				{/* 測試結果顯示 */}
 				{testResults && (
-					<EnhancedResultsDisplay testResults={testResults} />
+					<EnhancedResults testResults={testResults} />
 				)}
 
 				{/* 高級設定 */}
