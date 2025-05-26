@@ -251,7 +251,8 @@ const IndexPage: React.FC = () => {
 	const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
 	const [error, setError] = useState<string | null>(null);
 	const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
-
+	const [newsItems, setNewsItems] = useState<NewsItem[]>([])
+	const [isParsing, setIsParsing] = useState<boolean>(false)
 	// Load settings from localStorage
 	const loadSettings = (): AppSettings | null => {
 		try {
@@ -292,6 +293,9 @@ const IndexPage: React.FC = () => {
 				setSearchResult(searchResultData);
 				setLastUpdated(new Date());
 				setError(null);
+				setIsParsing(true)
+				searchResultData && setNewsItems(parseSearchContent(searchResultData.content))
+				setIsParsing(false)
 			} else {
 				const errorResult = result as ErrorContent;
 				setError(errorResult.error);
@@ -343,7 +347,7 @@ const IndexPage: React.FC = () => {
 		});
 	};
 
-	const newsItems: NewsItem[] = searchResult ? parseSearchContent(searchResult.content) : [];
+
 	const stats: SearchStats | null = searchResult ? {
 		responseTime: searchResult.responseTime,
 		totalTokens: searchResult.usage?.total_tokens || 0,
@@ -487,7 +491,7 @@ const IndexPage: React.FC = () => {
 				{stats && <StatsDashboard stats={stats} />}
 
 				{/* News Content */}
-				{searchResult && (
+				{(newsItems && searchResult) && (
 					<div className="space-y-6">
 						<div className="flex items-center justify-between">
 							<h2 className="text-xl font-semibold">
@@ -498,9 +502,9 @@ const IndexPage: React.FC = () => {
 							</Badge>
 						</div>
 
-						{newsItems.length > 0 ? (
+						{newsItems.length > 0  ? (
 							<div className="space-y-4">
-								{newsItems.map((item: NewsItem) => (
+								{ !isParsing && newsItems.map((item: NewsItem) => (
 									<NewsCard
 										key={item.id}
 										title={item.title}
