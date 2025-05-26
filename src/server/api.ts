@@ -51,18 +51,20 @@ export interface ChatMessage {
 }
 
 export interface SearchParameters {
-    mode: 'auto' | 'manual';
+    mode: 'auto' | 'on';
     sources: SearchSource[];
     max_search_results: number;
     return_citations: boolean;
     from_date?: string;
+   
 }
 
 export interface ApiPayload {
     messages: ChatMessage[];
     search_parameters: SearchParameters;
     model: string;
-    max_tokens: number;
+    from_date?: string;
+    to_date?:string
 }
 
 export interface ApiUsage {
@@ -101,7 +103,6 @@ export class XAIService {
     async testSearch(settings: SearchSettings): Promise<ApiResponse> {
         try {
             const searchSources: SearchSource[] = this._buildSearchSources(settings);
-
             // Use user-configured search query
             const searchQuery: string = settings.customSearchQuery || 'Provide a brief summary of the latest technology news.';
 
@@ -113,16 +114,16 @@ export class XAIService {
                     }
                 ],
                 search_parameters: {
-                    mode: 'auto',
+                    mode: 'on',
                     sources: searchSources,
                     max_search_results: Math.min(settings.maxResults || 10, 20),
                     return_citations: true,
                     ...(settings.dateRange && {
-                        from_date: new Date(Date.now() - settings.dateRange * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+                        from_date: new Date(Date.now() - settings.dateRange * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+                        to_data:new Date(Date.now()).toISOString().split('T')[0],
                     })
                 },
                 model: 'grok-3-latest',
-                max_tokens: 500
             };
 
             console.log('Search payload:', JSON.stringify(payload, null, 2));

@@ -18,12 +18,16 @@ import {
 } from 'lucide-react';
 import { Textarea } from "@/components/ui/textarea"
 import {
-	Select
+	Select,
+	SelectContent,
+	SelectGroup,
+	SelectItem,
+	SelectLabel,
+	SelectTrigger,
+	SelectValue,
 } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
-
 import { Alert, AlertTitle } from "@/components/ui/alert"
-
 import {
 	Card,
 	CardContent,
@@ -42,6 +46,7 @@ import { XAIService, type SuccessContent, type ErrorContent } from '@/server/api
 
 // 主要設定頁面組件
 const SettingsPage = () => {
+	//TODO: need to fix the api   (Supported by RSS)
 	const [settings, setSettings] = useState(JSON.parse(localStorage.getItem('interestRadarSettings')!) as typeof SettingsJson || SettingsJson);
 
 	const [isSaving, setIsSaving] = useState(false);
@@ -75,10 +80,8 @@ const SettingsPage = () => {
 	const testSearch = async () => {
 		setIsTesting(true);
 		setTestResults(null);
-
 		const xaiService = new XAIService(settings.apiKey);
 		const result = await xaiService.testSearch(settings);
-
 		setTestResults(result);
 		setIsTesting(false);
 	};
@@ -273,19 +276,41 @@ const SettingsPage = () => {
 						</CardHeader>
 						<CardContent className="space-y-4">
 							<div>
-								<label className="block text-sm font-medium text-gray-700 mb-2">
-									搜尋頻率
-								</label>
 								<Select
 									value={settings.searchFrequency}
 									onValueChange={(value) => updateSetting('searchFrequency', value)}
 								>
-									<option value="daily">每日</option>
-									<option value="weekly">每週</option>
-									<option value="monthly">每月</option>
+									<SelectTrigger className="w-[180px]">
+										<SelectValue placeholder="選擇頻率" />
+									</SelectTrigger>
+									<SelectContent>
+										<SelectGroup>
+											<SelectLabel className="block text-sm font-medium text-gray-700 mb-2">搜尋頻率</SelectLabel>
+											<SelectItem value="daily">每日</SelectItem>
+											<SelectItem value="weekly">每週</SelectItem>
+											<SelectItem value="monthly">每月</SelectItem>
+										</SelectGroup>
+									</SelectContent>
+					
 								</Select>
 							</div>
-
+							<div>
+								<label className="block text-sm font-medium text-gray-700 mb-2">
+									搜尋時間範圍：{settings.dateRange} 天
+								</label>
+								<input
+									type="range"
+									min="1"
+									max="30"
+									value={settings.dateRange}
+									onChange={(e) => updateSetting('dateRange', parseInt(e.target.value))}
+									className="w-full"
+								/>
+								<div className="flex justify-between text-xs text-gray-500 mt-1">
+									<span>1天</span>
+									<span>30天</span>
+								</div>
+							</div>
 							<div>
 								<label className="block text-sm font-medium text-gray-700 mb-2">
 									最大結果數量：{settings.maxResults}
@@ -345,54 +370,50 @@ const SettingsPage = () => {
 						</CardHeader>
 						<CardContent className="space-y-4">
 							<div>
-								<label className="block text-sm font-medium text-gray-700 mb-2">
-									地區 (ISO Alpha-2 代碼)
-								</label>
 								<Select
 									value={settings.countryCode}
 									onValueChange={(value) => updateSetting('countryCode', value)}
 								>
-									<option value="">全球</option>
-									<option value="TW">台灣 (TW)</option>
-									<option value="US">美國 (US)</option>
-									<option value="JP">日本 (JP)</option>
-									<option value="CN">中國 (CN)</option>
-									<option value="KR">韓國 (KR)</option>
-									<option value="CH">瑞士 (CH)</option>
+									<SelectTrigger className="w-[180px]">
+										<SelectValue placeholder="選擇地區" />
+									</SelectTrigger>
+									<SelectContent>
+										<SelectGroup>
+											<SelectLabel className="block text-sm font-medium text-gray-700 mb-2">
+												地區 (ISO Alpha-2 代碼)
+											</SelectLabel>
+											<SelectItem value="GLOBAL">全球</SelectItem>
+											<SelectItem value="TW">台灣 (TW)</SelectItem>
+											<SelectItem value="US">美國 (US)</SelectItem>
+											<SelectItem value="JP">日本 (JP)</SelectItem>
+											<SelectItem value="CN">中國 (CN)</SelectItem>
+											<SelectItem value="KR">韓國 (KR)</SelectItem>
+											<SelectItem value="CH">瑞士 (CH)</SelectItem>
+										</SelectGroup>
+									</SelectContent>
 								</Select>
 							</div>
 
 							<div>
-								<label className="block text-sm font-medium text-gray-700 mb-2">
-									語言
-								</label>
 								<Select
 									value={settings.language}
 									onValueChange={(value) => updateSetting('language', value)}
 								>
-									<option value="zh-TW">繁體中文</option>
-									<option value="zh-CN">簡體中文</option>
-									<option value="en">English</option>
-									<option value="ja">日本語</option>
+									<SelectTrigger className="w-[180px]">
+										<SelectValue placeholder="選擇語言" />
+									</SelectTrigger>
+									<SelectContent>
+										<SelectGroup>
+											<SelectLabel className="block text-sm font-medium text-gray-700 mb-2">
+												語言
+											</SelectLabel>
+											<SelectItem value="zh-TW">繁體中文</SelectItem>
+											<SelectItem value="zh-CN">簡體中文</SelectItem>
+											<SelectItem value="en">English</SelectItem>
+											<SelectItem value="ja">日本語</SelectItem>
+										</SelectGroup>
+									</SelectContent>
 								</Select>
-							</div>
-
-							<div>
-								<label className="block text-sm font-medium text-gray-700 mb-2">
-									搜尋時間範圍：{settings.dateRange} 天
-								</label>
-								<input
-									type="range"
-									min="1"
-									max="30"
-									value={settings.dateRange}
-									onChange={(e) => updateSetting('dateRange', parseInt(e.target.value))}
-									className="w-full"
-								/>
-								<div className="flex justify-between text-xs text-gray-500 mt-1">
-									<span>1天</span>
-									<span>30天</span>
-								</div>
 							</div>
 						</CardContent>
 					</Card>

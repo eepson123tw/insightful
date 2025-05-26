@@ -326,12 +326,11 @@ const IndexPage: React.FC = () => {
 	// Parse search content into news items
 	const parseSearchContent = (content: string): NewsItem[] => {
 		if (!content) return [];
-
 		const sections = content.split(/\n\n|\d+\.\s+/).filter(section => section.trim().length > 0);
-
-		return sections.map((section, index) => {
+		const filterStartEndSections = sections.slice(1,sections.length-1)
+		return filterStartEndSections.map((section, index) => {
 			const lines = section.trim().split('\n');
-			const title = lines[0].replace(/^\*\*|\*\*$/g, '').trim() || `新聞 ${index + 1}`;
+			const title = lines[0].replace(/^\*\*|\*\*$/g, '').trim().replace('**','') || `新聞 ${index + 1}`;
 			const content = lines.slice(1).join('\n').trim() || lines[0];
 
 			return {
